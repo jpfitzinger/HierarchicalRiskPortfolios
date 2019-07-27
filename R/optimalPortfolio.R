@@ -275,6 +275,12 @@ optimalPortfolio <- function(Sigma, mu = NULL, semiDev = NULL, control = list())
     w <- .invvolPortfolio(Sigma = Sigma, control = control)
   } else if (ctr$type[1] == "maxdec") {
     w <- .maxdecPortfolio(Sigma = Sigma, control = control)
+  } else if (ctr$type[1] == "hrp") {
+    w <- .hrpPortfolio(Sigma = Sigma, control = control)
+  } else if (ctr$type[1] == "hmv") {
+    w <- .hmvPortfolio(mu = mu, Sigma = Sigma, control = control)
+  } else if (ctr$type[1] == "hminvol") {
+    w <- .hminvolPortfolio(Sigma = Sigma, control = control)
   } else {
     stop("control$type is not well defined")
   }
@@ -296,7 +302,7 @@ optimalPortfolio <- function(Sigma, mu = NULL, semiDev = NULL, control = list())
   }
   nam <- names(control)
   ## type
-  type <- c("mv", "minvol", "erc", "maxdiv", "riskeff", "invvol", "maxdec")
+  type <- c("mv", "minvol", "erc", "maxdiv", "riskeff", "invvol", "maxdec", "hrp", "hmv", "hminvol")
   if (!("type" %in% nam) || is.null(control$type)) {
     control$type <- type
   }
@@ -480,6 +486,33 @@ optimalPortfolio <- function(Sigma, mu = NULL, semiDev = NULL, control = list())
   sig <- sqrt(diag(Sigma))
   w <- 1/sig
   w <- w/sum(w)
+  
+  # Edit: resolve constraint violations
+  # The idea is simple: if constraint is violated, set to binding limit (i.e. make equal to constraint)
+  # Subsequently distribute any excess allocation to the remaining weights in proportion of their inverse variance
+  n <- dim(Sigma)[1]
+  ctr <- .ctrPortfolio(n, control)
+  
+  if (ctr$constraint[1] == "user") {
+    
+    # Fetch constraints
+    UB <- ctr$UB
+    LB <- ctr$LB
+    
+    delta <- pmax(0, LB - w) - pmax(0, w - UB)
+    maxit <- 1000
+    niter <- 0
+    while (any(abs(delta) > 0) && niter < maxit) {
+      
+      w[abs(delta) > 0] <- w[abs(delta) > 0] + delta[abs(delta) > 0]
+      w[delta == 0] <- w[delta == 0] + (1 - sum(w)) * w[delta == 0] / sum(w[delta == 0])
+      w <- w / sum(w)
+      delta <- pmax(0, LB - w) - pmax(0, w - UB)
+      niter <- niter + 1
+      
+    }
+  }
+  
   return(w)
 }
 

@@ -1,14 +1,10 @@
-# RiskPortfolios
+# HierarchicalRiskPortfolios
 Computation of risk-based portfolios in R
 
-`RiskPortfolios` ([Ardia et al., 2017](http://dx.doi.org/10.21105/joss.00171)) is an R package for constructing risk-based portfolios dedicated to portfolio managers 
-and quantitative analysts. It provides a set of functionalities to build mean-variance, minimum variance, inverse-volatility weighted, 
-equal-risk-contribution, maximum diversification, and risk-efficient portfolios. As risk-based portfolios are
-mainly based on covariances, the package also provides a large set of covariance matrix estimators. See [Ardia et al. (2017)](http://dx.doi.org/10.21105/joss.00171) for details. A Monte Carlo study relying on `RiskPortfolios` is presented in [Ardia et al. (2017)](http://dx.doi.org/10.1007/s10479-017-2474-7).
-
-The latest stable version of `RiskPortfolios` is available at [https://cran.r-project.org/package=RiskPortfolios](https://cran.r-project.org/package=RiskPortfolios).
-
-The latest development version of `RiskPortfolios` is available at [https://github.com/ArdiaD/RiskPortfolios](https://github.com/ArdiaD/RiskPortfolios).
+`HierarchicalRiskPortfolios` is a forked version of the R package `RiskPortfolios` ([Ardia et al., 2017](http://dx.doi.org/10.21105/joss.00171)) for constructing hierarchical risk-based portfolios dedicated to portfolio managers 
+and quantitative analysts. It provides a set of functionalities to build hierarchical risk parity, 
+mean-variance and minimum variance portfolios in addition to the methods implemented in the 
+original package.
 
 Please cite `RiskPortfolios` in publications:
 
